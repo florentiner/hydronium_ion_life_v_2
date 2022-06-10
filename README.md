@@ -2,7 +2,7 @@
 
 ![Grotthuss mechanism](https://upload.wikimedia.org/wikipedia/commons/d/d3/Proton_Zundel.gif)
 
-This is a training project that I did with Nikolay Sukhanov for a chemoinformatic course.
+This is a training project that I did with my groupmate Nikolai Sukhanov as an examination project for the course of chemoinformatics.
 
 Goal of this project was to find the average lifetime of hydronium in silico experiments and compare it with the value of a real experiment. 
 
