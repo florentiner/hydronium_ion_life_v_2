@@ -1,6 +1,6 @@
 # hydronium_ion_life_v_2
 
-https://commons.wikimedia.org/wiki/File:Proton_Zundel.gif?uselang=ru![image](https://user-images.githubusercontent.com/50297244/173148263-46967f51-58ee-4371-8099-2e2334053cb3.png)
+![Grotthuss mechanism](https://upload.wikimedia.org/wikipedia/commons/d/d3/Proton_Zundel.gif)
 
 This is a training project that I did with Nikolay Sukhanov for a chemoinformatic course.
 
