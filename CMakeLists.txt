@@ -44,12 +44,11 @@ endif(OPENMP_FOUND)
 endif()
 
 if(UNIX AND NOT APPLE)
-    set(LINUX TRUE)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -fopenmp")
 endif()
 
 
 set(CMAKE_CXX_STANDARD 14)
-#set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Xpreprocessor -fopenmp -lomp ")
 
 
 add_executable(hydro_ion_life_v_2 main.cpp classes_for_water/Atom.cpp classes_for_water/H_atom.cpp classes_for_water/O_atom.cpp parc_and_analis.cpp)
