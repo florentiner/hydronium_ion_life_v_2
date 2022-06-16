@@ -64,7 +64,6 @@ void glosar(int num, int order, std::vector<int>& input_vect){
     }
 }
 
-
 void write_to_file_res(std::vector<int> life_ar){
     std::string res_str;
     std::ofstream res_file;
@@ -78,13 +77,6 @@ void write_to_file_res(std::vector<int> life_ar){
     res_file << res_str;
     res_file.close();
 }
-
-
-std::vector<int> change_glosar(std::vector<int> glosar_O_of_jump_H, int O_nameaecf, int change_index){
-    glosar_O_of_jump_H[O_nameaecf] = change_index;
-    return glosar_O_of_jump_H;
-}
-
 
 std::vector< char > readline( gzFile f ) {
     std::vector< char > v( 256 );
@@ -118,6 +110,7 @@ std::vector< char > readline( gzFile f ) {
     v.resize( pos );
     return v;
 }
+
 
 int hydro_life(std::string file, bool is_gz){
     std::vector<int> life_ar;
@@ -267,7 +260,6 @@ int hydro_life(std::string file, bool is_gz){
                 for (O_atom *O_observ: O_of_jump_H) {
                     std::vector<H_atom *> to_add = O_observ->get_H();
                     jump_H.insert(jump_H.end(), std::begin(to_add), std::end(to_add));
-
                 }
             }
             is_O_of_jump_H_change = false;
@@ -275,6 +267,7 @@ int hydro_life(std::string file, bool is_gz){
             first_frame = false;
         }
     }
+
     is_gz ? (void)gzclose(infile) : newfile.close(); //close the file object.
     std::cout << frame_time << std::endl;
     write_to_file_res(life_ar);

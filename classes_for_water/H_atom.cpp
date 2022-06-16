@@ -9,7 +9,6 @@ H_atom::H_atom() {
     O_conect = NULL;
 }
 
-
 H_atom::~H_atom() {
     O_conect = NULL;
 }
@@ -41,7 +40,4 @@ O_atom *H_atom::get_O_conected() {
     return O_conect;
 }
 
-H_atom::H_atom(std::vector<std::string> re) : Atom(re) {
-    
-}
 

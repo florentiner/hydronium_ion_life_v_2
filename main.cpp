@@ -21,7 +21,7 @@ int main(int argc, char *argv[]) {
         return hydro_life(argv[1], is_gz);
     }
     else{
-        //hydro_life("/Users/danilezov/Downloads/traj_b.dmp", false);
+        hydro_life("/Users/danilezov/from_git/hydronium_ion_life_v_2/traj.dmp", false);
         std::cout << "Pleas enter input file (text format or .gz. Text format is about 3x faster then .gz)" << std::endl;
         return -1;
     }

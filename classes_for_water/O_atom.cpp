@@ -11,13 +11,8 @@ O_atom::O_atom() {
     H_arr = int_v;
 }
 
-
 O_atom::~O_atom() {
     H_arr.clear();
-}
-
-O_atom::O_atom(std::vector<std::string> re) : Atom(re) {
-
 }
 
 int O_atom::get_H_count() {

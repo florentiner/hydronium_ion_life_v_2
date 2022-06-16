@@ -23,7 +23,7 @@ private:
 public:
     H_atom(); // default initialization
     ~H_atom(); // distructor
-    H_atom(std::vector<std::string> re);  // initializer of H (hydrogen) what parse string and get information about atom (use same function in class Atom)
+    H_atom(std::vector<std::string> re): Atom(re) {};  // initializer of H (hydrogen) what parse string and get information about atom (use same function in class Atom)
     int get_O_name(); // return number of O (oxygen) that H (hydrogen) is associated with
     O_atom* get_O_conected(); // return reference to O (oxygen) that H (hydrogen) is associated with
     void set_O_conect(O_atom* O); // change reference to another O (oxygen) that now H (hydrogen) is associated with
