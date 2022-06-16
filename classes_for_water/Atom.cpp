@@ -14,7 +14,6 @@ Atom::Atom() {
 Atom::~Atom() {
 }
 
-
 Atom::Atom(std::vector<std::string> re) {
     this->name = stoi(re[0]);
     this->x =stof(re[2]);
@@ -22,17 +21,6 @@ Atom::Atom(std::vector<std::string> re) {
     this->z = stof(re[4]);
 }
 
-float Atom::get_x() {
-    return x;
-}
-
-float Atom::get_y() {
-    return y;
-}
-
-float Atom::get_z() {
-    return z;
-}
 
 float Atom::get_name() {
     return name;

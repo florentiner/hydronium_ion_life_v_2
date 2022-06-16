@@ -1,12 +1,11 @@
 #include <iostream>
-#include <vector>
+//#include <vector>
 #include <string>
 #include "parc_and_analis.h"
 
-
 int main(int argc, char *argv[]) {
 
-    bool is_gz;
+    bool is_gz; // true if file in .gz format and false if not
     if (argc != 1){
         if (std::string(argv[1]).find(".zip") != std::string::npos) {
             std::cout << "Wrong compression format. Pleas convert to .gz" << std::endl;
@@ -22,9 +21,8 @@ int main(int argc, char *argv[]) {
         return hydro_life(argv[1], is_gz);
     }
     else{
-        std::cout << "Pleas enter input file (text format or .gz. Text format is faster)" << std::endl;
+        //hydro_life("/Users/danilezov/Downloads/traj_b.dmp", false);
+        std::cout << "Pleas enter input file (text format or .gz. Text format is about 3x faster then .gz)" << std::endl;
         return -1;
     }
-
-
 }

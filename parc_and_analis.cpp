@@ -22,7 +22,6 @@ std::vector<std::string> split(std::string str, char delimiter) {
     while(getline(ss, tok, delimiter)) {
         internal.push_back(tok);
     }
-
     return internal;
 }
 
@@ -171,7 +170,6 @@ int hydro_life(std::string file, bool is_gz){
         }
     }
 
-
     while(!tp.empty()){
 
         if(is_gz){
@@ -181,8 +179,6 @@ int hydro_life(std::string file, bool is_gz){
         else {
             getline(newfile, tp);
         }
-
-
 
         if(start_frame == tp){
             start_frame_coord = true;
@@ -204,11 +200,7 @@ int hydro_life(std::string file, bool is_gz){
                     order_count++;
                 }
             }
-            else {
-                if (end_frame != tp) {
-                    lines.push_back(tp);
-                }
-            }
+            else (end_frame != tp) ? lines.push_back(tp) : void();
         }
         if (end_frame == tp){
             if (first_frame) {

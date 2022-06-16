@@ -5,7 +5,7 @@
 #ifndef HYDRO_ION_LIFE_O_ATOM_H
 #define HYDRO_ION_LIFE_O_ATOM_H
 #include "Atom.h"
-class H_atom;
+class H_atom; // prevent mutual using (H_atom ⇌ O_atom)
 
 class O_atom: public Atom, std::vector<std::string> {
 protected:
@@ -14,18 +14,17 @@ protected:
     using Atom::z;
     using Atom::name;
 
-    int H_count = 0;
-    std::vector<H_atom*> H_arr;
+    int H_count = 0; // number of H (hydrogen) that associated with this O (oxygen)
+    std::vector<H_atom*> H_arr; // vector of reference to H (hydrogen) that associated with this O (oxygen) (always 2 or 3)
 
 public:
-    O_atom();
-    ~O_atom();
-    O_atom( std::vector<std::string> re);
-    int get_H_count();
-    void up_H_count(H_atom* H);
-    std::vector<H_atom*> get_H();
-    void del_atom(int H_num);
+    O_atom(); // default initialization
+    ~O_atom(); // distructor
+    O_atom( std::vector<std::string> re); // initializer of O (oxygen) what parse string and get information about atom (use same function in class Atom)
+    int get_H_count(); // return number of H (hydrogen) that associated with this O (oxygen)
+    std::vector<H_atom*> get_H(); // return vector of reference to H (hydrogen) that associated with this O (oxygen) (always 2 or 3)
+    void up_H_count(H_atom* H); // add reference to H (hydrogen) that now associated with this O (oxygen)
+    void del_atom(int H_num); // drop  reference to H (hydrogen) that now not associated with this O (oxygen)
 };
-
 
 #endif //HYDRO_ION_LIFE_O_ATOM_H
