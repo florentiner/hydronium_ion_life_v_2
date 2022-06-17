@@ -4,7 +4,6 @@
 
 #include "parc_and_analis.h"
 #include <iostream>
-#include <sstream>
 #include <fstream>
 #include <limits>
 #include <zlib.h>
@@ -14,6 +13,7 @@
 #include "omp.h"
 
 
+//returns a vector with arguments between which symbol is located (delimiter)
 std::vector<std::string> split(std::string str, char delimiter) {
     std::vector<std::string> internal;
     std::stringstream ss(str);
@@ -25,6 +25,7 @@ std::vector<std::string> split(std::string str, char delimiter) {
     return internal;
 }
 
+// if an atom with an input name is in the input vector, then its index is returned, else 0
 template <typename T>
 int in_vector(std::string name,std::vector<T> H_arr){
     int i = 0;
@@ -37,6 +38,7 @@ int in_vector(std::string name,std::vector<T> H_arr){
     return 0;
 }
 
+//return index of nearest O (oxygen) in input vector of Os
 int find_nearest_O(H_atom* H, std::vector<O_atom*> o_arr, float* frame_lin){
     float min_dist = float(std::numeric_limits<int>::max());
     int max_i;
@@ -51,6 +53,7 @@ int find_nearest_O(H_atom* H, std::vector<O_atom*> o_arr, float* frame_lin){
     return max_i;
 }
 
+// change input vector. If size of input vector less than input number then add missing quantity to vector and last will be variable order. Else change numberth element to order variable
 void glosar(int num, int order, std::vector<int>& input_vect){
     if (num <= input_vect.size()){
         input_vect[num] = order;
@@ -64,6 +67,7 @@ void glosar(int num, int order, std::vector<int>& input_vect){
     }
 }
 
+//make file with data in input vector
 void write_to_file_res(std::vector<int> life_ar){
     std::string res_str;
     std::ofstream res_file;
@@ -78,6 +82,7 @@ void write_to_file_res(std::vector<int> life_ar){
     res_file.close();
 }
 
+//return next line of .gz file
 std::vector< char > readline( gzFile f ) {
     std::vector< char > v( 256 );
     unsigned pos = 0;
@@ -112,6 +117,7 @@ std::vector< char > readline( gzFile f ) {
 }
 
 
+//main function that calculate vector of hydronium lifetime
 int hydro_life(std::string file, bool is_gz){
     std::vector<int> life_ar;
     std::vector<int> frame_time_ar;
