@@ -119,33 +119,33 @@ std::vector< char > readline( gzFile f ) {
 
 //main function that calculate vector of hydronium lifetime
 int hydro_life(std::string file, bool is_gz){
-    std::vector<int> life_ar;
-    std::vector<int> frame_time_ar;
-    float water_lentg = 0.96;
-    int frame_time = 0;
+    std::vector<int> life_ar; // vector with life time of hydronium
+    float water_length = 0.9584; // distance between H(hydrogen) and O(oxygen) in water molecule
+    int frame_time = 0; //counter of frame
+    int life_time = 0; //counter of hydronium life time
+    int make_glossary_for_O = 0; // use for make glossary for O(oxygen)
+    int change_O_glossary = 0; // use to change glossary for O(oxygen)
+    int open_frame_count = 0; // use to parse information about frame boundaries
     std::fstream newfile;
     gzFile infile;
-    std::string start_frame = "ITEM: BOX BOUNDS pp pp pp";
-    std::string end_frame ="ITEM: TIMESTEP";
-    std::string start_coord = "ITEM: ATOMS id type xs ys zs";
-    std::string tp;
-    bool open_frame = false;
-    bool first_frame = true;
-    bool start_frame_coord = false;
-    std::vector<H_atom*> h_arr;
-    std::vector<O_atom*> o_arr;
-    int open_frame_count = 0;
-    std::vector<O_atom*> O_of_jump_H;
-    std::vector<int> glosar_O_of_jump_H;
-    std::vector<H_atom*> jump_H;
-    std::vector<int> nubs_ar;
-    std::vector<std::string> lines;
-    std::vector<char> char_line;
-    float frame_lin[3];
-    int life_time = 0;
-    int order_count = 0;
-    int gloser_O_count = 0;
-    bool is_O_of_jump_H_change = false;
+    std::string start_frame = "ITEM: BOX BOUNDS pp pp pp"; // line from which start frame
+    std::string end_frame ="ITEM: TIMESTEP"; // line from which frame end
+    std::string start_coord = "ITEM: ATOMS id type xs ys zs"; // line from which start information about atoms coordinates
+    float frame_lin[3]; // array with information about frame boundaries
+    std::vector<H_atom*> h_arr; // vector with all H(hydrogen) in experiment which updated as needed
+    std::vector<O_atom*> o_arr; // vector with all O(oxygen) in experiment which updated every frame
+    std::vector<O_atom*> O_of_jump_H; // vector with O(oxygen) what include in hydronium
+    std::vector<int> glossary_O_of_jump_H; // glossary (index is atom number, value index in O_of_jump_H) of O(oxygen) what include in hydronium
+    std::vector<H_atom*> jump_H; // vector with H(hydrogen) in hydronium which need to be updated every frame
+    std::vector<int> glossary_of_O; // glossary (index is atom number, value index in o_arr) of O(oxygen)
+    std::vector<char> char_line; // raw information from file
+    std::string tp; // read string from file
+    std::vector<std::string> lines; // vector with all lines in frame that include atoms data
+    bool first_frame = true; // indicator is the frame first
+    bool start_frame_coord = false; // indicator is the frame first
+    bool is_O_of_jump_H_change = false; //indicator that coordinates are being read
+
+    //open file and check if file has opened. If type of file .gz then one algorithm else another.
     if (is_gz) {
         infile = gzopen(file.c_str(), "rb");
         if (!infile) {
@@ -156,7 +156,6 @@ int hydro_life(std::string file, bool is_gz){
             char_line = readline(infile);
             tp = std::string (char_line.begin(), char_line.end());
         }
-
     }
     else{
         newfile.open(file,std::ios::in);
@@ -169,8 +168,10 @@ int hydro_life(std::string file, bool is_gz){
         }
     }
 
+    // cycle to read, parse and calculate needing data
     while(!tp.empty()){
 
+        //reading for different type of file
         if(is_gz){
             char_line = readline(infile);
             tp = std::string (char_line.begin(), char_line.end());
@@ -182,12 +183,15 @@ int hydro_life(std::string file, bool is_gz){
         if(start_frame == tp){
             start_frame_coord = true;
         }
+        //parse information for boundaries in frame
         else if ((start_frame_coord) and (open_frame_count < 3)){
             std::vector<std::string> re = split(tp, ' ');
             frame_lin[open_frame_count] = std::stof( re[1]);
             open_frame_count++;
         }
+        //parse information about atoms
         else if ((open_frame_count >= 3) and (tp != start_coord)){
+            //parse information to create of h_arr and o_arr
             if (first_frame) {
                 std::vector<std::string> re = split(tp, ' ');
                 if (re[1] == "1") {
@@ -195,13 +199,14 @@ int hydro_life(std::string file, bool is_gz){
                 }
                 else if (re[1] == "2"){
                     o_arr.push_back(new O_atom(re));
-                    glosar(stoi(re[0]), order_count, nubs_ar);
-                    order_count++;
+                    glosar(stoi(re[0]), make_glossary_for_O, glossary_of_O);
+                    make_glossary_for_O++;
                 }
             }
-            else (end_frame != tp) ? lines.push_back(tp) : void();
+            else (end_frame != tp) ? lines.push_back(tp) : void(); // filling vector with all information about atoms
         }
         if (end_frame == tp){
+            // First step. Find out which atoms are in the hydronym.
             if (first_frame) {
                 for (int i = 0; i < h_arr.size(); ++i) {
                     H_atom* H = h_arr[i];
@@ -211,12 +216,13 @@ int hydro_life(std::string file, bool is_gz){
                     (*best_O).up_H_count(H);
                     if((*best_O).get_H_count() == 3){
                         O_of_jump_H.push_back(best_O);
-                        glosar(best_O->get_name(), gloser_O_count, glosar_O_of_jump_H);
-                        gloser_O_count++;
+                        glosar(best_O->get_name(), change_O_glossary, glossary_O_of_jump_H);
+                        change_O_glossary++;
                     }
                 }
             }
             else{
+                // parse data from lines in parrarel mode
                 #pragma omp parallel for
                 for (std::string line: lines) {
                     std::vector<std::string> re = split(line, ' ');
@@ -225,11 +231,11 @@ int hydro_life(std::string file, bool is_gz){
                         (*H).set_cord(re[2], re[3], re[4]);
                     }
                     else if (re[1] == "2"){
-                        O_atom* O = o_arr[nubs_ar[stoi(re[0])]];
+                        O_atom* O = o_arr[glossary_of_O[stoi(re[0])]];
                         (*O).set_cord(re[2], re[3], re[4]);
                     }
                 }
-                bool brake_flag = false;
+                // calculates distance between H(hydrogen) that was in hydronym in previous frame.
                 for (int i = 0; i < jump_H.size(); ++i) {
                     H_atom* H = jump_H[i];
                     O_atom belong_O = *(*H).get_O_conected();
@@ -238,15 +244,16 @@ int hydro_life(std::string file, bool is_gz){
                     for (int j = 0; j < o_arr.size(); ++j) {
                         O_atom* O = o_arr[j];
                         float dist_to_pos_O = (*H).dist_bt_atoms(*O, frame_lin);
-                        if (((dist_to_prev_belong_O - dist_to_pos_O) > water_lentg) and (belong_O.get_name() != O->get_name())){
+                        //If difference between H(hydrogen) and O(oxygen) from the previous frame is less than the difference with the nearest O from the current frame, then it is assumed that H has changed the orbital.
+                        if (((dist_to_prev_belong_O - dist_to_pos_O) > water_length) and (belong_O.get_name() != O->get_name())){
                             O_atom* prev = (*H).get_O_conected();
                             (*prev).del_atom((*H).get_name());
                             (*H).set_O_conect(O);
                             (*O).up_H_count(H);
                             int index_to_change = (*prev).get_name();
-                            int change_index = glosar_O_of_jump_H[index_to_change];
-                            glosar_O_of_jump_H[index_to_change] = -1;
-                            glosar(O->get_name(), change_index, glosar_O_of_jump_H);
+                            int change_index = glossary_O_of_jump_H[index_to_change];
+                            glossary_O_of_jump_H[index_to_change] = -1;
+                            glosar(O->get_name(), change_index, glossary_O_of_jump_H);
                             O_of_jump_H[change_index] = O;
                             life_ar.push_back(life_time);
                             life_time = 0;
@@ -259,12 +266,12 @@ int hydro_life(std::string file, bool is_gz){
             life_time++;
             std::fill( std::begin( frame_lin ), std::end( frame_lin ), 0 );
             open_frame_count = 0;
-            open_frame = false;
             lines.clear();
+            // If H(hydrogen) change orbital, then change O(oxygen) and H, which need to be controlled.
             if ((is_O_of_jump_H_change) or (first_frame)) {
                 jump_H.clear();
-                for (O_atom *O_observ: O_of_jump_H) {
-                    std::vector<H_atom *> to_add = O_observ->get_H();
+                for (O_atom *O_observe: O_of_jump_H) {
+                    std::vector<H_atom *> to_add = O_observe->get_H();
                     jump_H.insert(jump_H.end(), std::begin(to_add), std::end(to_add));
                 }
             }
