@@ -25,7 +25,7 @@ public:
     ~Atom() ; // distructor
     Atom( std::vector<std::string> re); // initializer what parse string and get information about atom
     Atom( std::string* re);
-    float get_name(); // return atom number
+    int get_name(); // return atom number
     float coord(int i); // return x or y or z depends of number (0->x, 1->y, 2->z)
     void set_cord(std::string x,std::string y,std::string z); // update atom coordinates
 };

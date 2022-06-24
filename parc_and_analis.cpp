@@ -10,6 +10,7 @@
 #include <cstring>
 #include "classes_for_water/H_atom.h"
 #include "classes_for_water/O_atom.h"
+#include <array>
 #include "omp.h"
 
 
@@ -116,10 +117,42 @@ std::vector< char > readline( gzFile f ) {
     return v;
 }
 
+// struct type of data which will be used to visualize H(hydrogen) moving
+struct instruction {
+    std::string instruction;   // show or hide instruction
+    int frame; // frame number where implement instruction
+    std::array<int, 4> atom_name; // array of numbers of atoms for which the instruction is executed
+};
+
+// make file which will be used to visualize H(hydrogen) moving
+void write_to_file_vis(std::vector<instruction> instruction){
+    std::string res_str;
+    std::ofstream res_file;
+    res_file.open ("vis_mod.txt");
+    std::cout << ' ' <<std::endl;
+    int i = 0;
+    for(struct instruction el: instruction){
+        res_str += el.instruction + ' '  + std::to_string(el.frame) + ' ';
+        for(int numb: el.atom_name){
+            (numb != -1) ? res_str += std::to_string(numb) + ',' : std::string();
+        }
+        res_str.pop_back();
+        res_str += "; ";
+    }
+    res_file << res_str;
+    res_file.close();
+}
+
+// make instruction object
+instruction add_instruction_to_vector(O_atom O, int frame_time, std::string instruction) {
+    struct instruction inst = {instruction, frame_time, O.get_O_and_H_name()};
+    return inst;
+}
 
 //main function that calculate vector of hydronium lifetime
 int hydro_life(std::string file, bool is_gz){
     std::vector<int> life_ar; // vector with life time of hydronium
+    std::vector<instruction> arr_instruction_to_atom_visual; // vector of instruction with content
     float water_length = 0.9584; // distance between H(hydrogen) and O(oxygen) in water molecule
     int frame_time = 0; //counter of frame
     int life_time = 0; //counter of hydronium life time
@@ -149,7 +182,7 @@ int hydro_life(std::string file, bool is_gz){
     if (is_gz) {
         infile = gzopen(file.c_str(), "rb");
         if (!infile) {
-            std::cout << "Unccorect file input" << std::endl;
+            std::cout << "Incorrect file input" << std::endl;
             return -1;
         }
         else{
@@ -160,7 +193,7 @@ int hydro_life(std::string file, bool is_gz){
     else{
         newfile.open(file,std::ios::in);
         if (!newfile.is_open()) {
-            std::cout << "Unccorect file input" << std::endl;
+            std::cout << "Incorrect file input" << std::endl;
             return -1;
         }
         else {
@@ -218,6 +251,8 @@ int hydro_life(std::string file, bool is_gz){
                         O_of_jump_H.push_back(best_O);
                         glosar(best_O->get_name(), change_O_glossary, glossary_O_of_jump_H);
                         change_O_glossary++;
+                        instruction show_instruction = add_instruction_to_vector(best_O, frame_time, "show");
+                        arr_instruction_to_atom_visual.push_back(show_instruction);
                     }
                 }
             }
@@ -258,6 +293,10 @@ int hydro_life(std::string file, bool is_gz){
                             life_ar.push_back(life_time);
                             life_time = 0;
                             is_O_of_jump_H_change = true;
+                            instruction hide_instruction = add_instruction_to_vector(prev, frame_time, "hide");
+                            arr_instruction_to_atom_visual.push_back(hide_instruction);
+                            instruction show_instruction = add_instruction_to_vector(O, frame_time, "show");
+                            arr_instruction_to_atom_visual.push_back(show_instruction);
                         }
                     }
                 }
@@ -284,6 +323,7 @@ int hydro_life(std::string file, bool is_gz){
     is_gz ? (void)gzclose(infile) : newfile.close(); //close the file object.
     std::cout << frame_time << std::endl;
     write_to_file_res(life_ar);
+    write_to_file_vis(arr_instruction_to_atom_visual);
     h_arr.clear();
     o_arr.clear();
     return 0;
