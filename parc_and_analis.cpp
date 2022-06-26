@@ -119,6 +119,7 @@ std::vector< char > readline( gzFile f ) {
 
 // struct type of data which will be used to visualize H(hydrogen) moving
 struct instruction {
+    int jump_index; // this index help for grouping commands on python
     int frame; // frame number where implement instruction
     std::array<int, 4> atom_name; // array of numbers of atoms for which the instruction is executed
 };
@@ -131,7 +132,7 @@ void write_to_file_vis(std::vector<instruction> instruction){
     std::cout << ' ' <<std::endl;
     int i = 0;
     for(struct instruction el: instruction){
-        res_str += std::to_string(el.frame) + ' ';
+        res_str += std::to_string(el.jump_index) + ' ' + std::to_string(el.frame) + ' ';
         for(int numb: el.atom_name){
             (numb != -1) ? res_str += std::to_string(numb) + ',' : std::string();
         }
@@ -143,8 +144,8 @@ void write_to_file_vis(std::vector<instruction> instruction){
 }
 
 // make instruction object
-instruction add_instruction_to_vector(O_atom O, int frame_time) {
-    struct instruction inst = {frame_time, O.get_O_and_H_name()};
+instruction add_instruction_to_vector(O_atom O, int frame_time, int jump_index) {
+    struct instruction inst = {jump_index, frame_time, O.get_O_and_H_name()};
     return inst;
 }
 
@@ -249,9 +250,9 @@ int hydro_life(std::string file, bool is_gz){
                     if((*best_O).get_H_count() == 3){
                         O_of_jump_H.push_back(best_O);
                         glosar(best_O->get_name(), change_O_glossary, glossary_O_of_jump_H);
-                        change_O_glossary++;
-                        instruction show_instruction = add_instruction_to_vector(best_O, frame_time);
+                        instruction show_instruction = add_instruction_to_vector( best_O, frame_time, change_O_glossary);
                         arr_instruction_to_atom_visual.push_back(show_instruction);
+                        change_O_glossary++;
                     }
                 }
             }
@@ -292,7 +293,7 @@ int hydro_life(std::string file, bool is_gz){
                             life_ar.push_back(life_time);
                             life_time = 0;
                             is_O_of_jump_H_change = true;
-                            instruction show_instruction = add_instruction_to_vector(O, frame_time);
+                            instruction show_instruction = add_instruction_to_vector(O, frame_time, change_index);
                             arr_instruction_to_atom_visual.push_back(show_instruction);
                         }
                     }
