@@ -14,6 +14,10 @@ After that, we had to write an algorithm analyzing the resulting file and determ
 
 I wrote an algorithm on C++ trying to optimize the running time of the program, but due to time constraints, the algorithm was far from perfect. This repository contains an improved version of the algorithm.
 
+# Visualistation of modeling
+
+![visul](https://drive.google.com/file/d/14Alkzc9zXVnUiUVTelBCcYItPMhgwQ6k/view?usp=sharing)
+
 # Links:
 
 <h4> More information about project and it results can be found in the Google presentation: https://docs.google.com/presentation/d/1cojQTGG-8JYVHib04xLLoeiYF0HFTsvFRbRrmog8Xjg/edit?usp=sharing </h4>
