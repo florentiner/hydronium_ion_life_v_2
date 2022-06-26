@@ -119,7 +119,6 @@ std::vector< char > readline( gzFile f ) {
 
 // struct type of data which will be used to visualize H(hydrogen) moving
 struct instruction {
-    std::string instruction;   // show or hide instruction
     int frame; // frame number where implement instruction
     std::array<int, 4> atom_name; // array of numbers of atoms for which the instruction is executed
 };
@@ -132,7 +131,7 @@ void write_to_file_vis(std::vector<instruction> instruction){
     std::cout << ' ' <<std::endl;
     int i = 0;
     for(struct instruction el: instruction){
-        res_str += el.instruction + ' '  + std::to_string(el.frame) + ' ';
+        res_str += std::to_string(el.frame) + ' ';
         for(int numb: el.atom_name){
             (numb != -1) ? res_str += std::to_string(numb) + ',' : std::string();
         }
@@ -144,8 +143,8 @@ void write_to_file_vis(std::vector<instruction> instruction){
 }
 
 // make instruction object
-instruction add_instruction_to_vector(O_atom O, int frame_time, std::string instruction) {
-    struct instruction inst = {instruction, frame_time, O.get_O_and_H_name()};
+instruction add_instruction_to_vector(O_atom O, int frame_time) {
+    struct instruction inst = {frame_time, O.get_O_and_H_name()};
     return inst;
 }
 
@@ -251,7 +250,7 @@ int hydro_life(std::string file, bool is_gz){
                         O_of_jump_H.push_back(best_O);
                         glosar(best_O->get_name(), change_O_glossary, glossary_O_of_jump_H);
                         change_O_glossary++;
-                        instruction show_instruction = add_instruction_to_vector(best_O, frame_time, "show");
+                        instruction show_instruction = add_instruction_to_vector(best_O, frame_time);
                         arr_instruction_to_atom_visual.push_back(show_instruction);
                     }
                 }
@@ -293,9 +292,7 @@ int hydro_life(std::string file, bool is_gz){
                             life_ar.push_back(life_time);
                             life_time = 0;
                             is_O_of_jump_H_change = true;
-                            instruction hide_instruction = add_instruction_to_vector(prev, frame_time, "hide");
-                            arr_instruction_to_atom_visual.push_back(hide_instruction);
-                            instruction show_instruction = add_instruction_to_vector(O, frame_time, "show");
+                            instruction show_instruction = add_instruction_to_vector(O, frame_time);
                             arr_instruction_to_atom_visual.push_back(show_instruction);
                         }
                     }
