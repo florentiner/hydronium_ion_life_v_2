@@ -29,7 +29,7 @@ Atom::Atom( std::string* re){
 }
 
 
-float Atom::get_name() {
+int Atom::get_name() {
     return name;
 }
 

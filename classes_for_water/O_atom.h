@@ -20,9 +20,11 @@ protected:
 public:
     O_atom(); // default initialization
     ~O_atom(); // distructor
+    O_atom(O_atom* O_to_cop);
     O_atom( std::vector<std::string> re): Atom(re) {}; // initializer of O (oxygen) what parse string and get information about atom (use same function in class Atom)
     int get_H_count(); // return number of H (hydrogen) that associated with this O (oxygen)
     std::vector<H_atom*> get_H(); // return vector of reference to H (hydrogen) that associated with this O (oxygen) (always 2 or 3)
+    std::array<int, 4> get_O_and_H_name(); // return array of name atoms name ([O, H_1, H_2, H_3])
     void up_H_count(H_atom* H); // add reference to H (hydrogen) that now associated with this O (oxygen)
     void del_atom(int H_num); // drop  reference to H (hydrogen) that now not associated with this O (oxygen)
 };
