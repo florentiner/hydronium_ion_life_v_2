@@ -72,7 +72,7 @@ void glosar(int num, int order, std::vector<int>& input_vect){
 void write_to_file_res(std::vector<int> life_ar, std::string file_name_of_analyzing){
     std::string res_str;
     std::ofstream res_file;
-    std::string file_name_write = "vis_mod" + file_name_of_analyzing + ".txt";
+    std::string file_name_write = "res_life" + file_name_of_analyzing + ".txt";
     res_file.open (file_name_write);
     std::cout << ' ' <<std::endl;
     for(int el:life_ar){
