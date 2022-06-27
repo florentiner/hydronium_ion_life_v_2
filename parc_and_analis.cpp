@@ -69,10 +69,11 @@ void glosar(int num, int order, std::vector<int>& input_vect){
 }
 
 //make file with data in input vector
-void write_to_file_res(std::vector<int> life_ar){
+void write_to_file_res(std::vector<int> life_ar, std::string file_name_of_analyzing){
     std::string res_str;
     std::ofstream res_file;
-    res_file.open ("res_mod.txt");
+    std::string file_name_write = "vis_mod" + file_name_of_analyzing + ".txt";
+    res_file.open (file_name_write);
     std::cout << ' ' <<std::endl;
     for(int el:life_ar){
         res_str += std::to_string(el) + ", ";
@@ -125,10 +126,11 @@ struct instruction {
 };
 
 // make file which will be used to visualize H(hydrogen) moving
-void write_to_file_vis(std::vector<instruction> instruction){
+void write_to_file_vis(std::vector<instruction> instruction, std::string file_name_of_analyzing){
     std::string res_str;
     std::ofstream res_file;
-    res_file.open ("vis_mod.txt");
+    std::string file_name_write = "vis_mod" + file_name_of_analyzing + ".txt";
+    res_file.open (file_name_write);
     std::cout << ' ' <<std::endl;
     int i = 0;
     for(struct instruction el: instruction){
@@ -320,8 +322,8 @@ int hydro_life(std::string file, bool is_gz){
 
     is_gz ? (void)gzclose(infile) : newfile.close(); //close the file object.
     std::cout << frame_time << std::endl;
-    write_to_file_res(life_ar);
-    write_to_file_vis(arr_instruction_to_atom_visual);
+    write_to_file_res(life_ar, file);
+    write_to_file_vis(arr_instruction_to_atom_visual, file);
     h_arr.clear();
     o_arr.clear();
     return 0;
