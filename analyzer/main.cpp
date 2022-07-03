@@ -21,6 +21,7 @@ int main(int argc, char *argv[]) {
         return hydro_life(argv[1], is_gz);
     }
     else{
+        int a = 0;
         std::cout << "Pleas enter input file (text format or .gz. Text format is about 3x faster then .gz)" << std::endl;
         return -1;
     }

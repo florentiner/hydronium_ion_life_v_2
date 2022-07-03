@@ -261,7 +261,8 @@ int hydro_life(std::string file, bool is_gz){
             else{
                 // parse data from lines in parrarel mode
                 #pragma omp parallel for
-                for (std::string line: lines) {
+                for (int l_i = 0; l_i < lines.size(); ++l_i) {
+                    std::string line = lines[l_i];
                     std::vector<std::string> re = split(line, ' ');
                     if ((re[1] == "1") and (in_vector(re[0], jump_H) )) {
                         H_atom* H = jump_H[in_vector(re[0], jump_H) - 1];
