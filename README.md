@@ -16,7 +16,7 @@ I wrote an algorithm on C++ trying to optimize the running time of the program, 
 
 # Visualistation of modeling
 
-![visul](https://drive.google.com/file/d/14Alkzc9zXVnUiUVTelBCcYItPMhgwQ6k/view?usp=sharing)
+![visul](https://youtu.be/1ltx9Zs2ZLY)
 
 # Links:
 
