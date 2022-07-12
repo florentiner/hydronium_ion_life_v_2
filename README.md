@@ -45,7 +45,7 @@ cmake .. && make
 
 To visualize trajectory use ```visualization_model_of_water_dynamic.ipynb``` in visualization_of_water_modeling folder
 
-Example Visualistation of modeling:
+**Example Visualistation of modeling:**
 
 [![Visualistation of modeling](https://img.youtube.com/vi/L8atFMG-Ka0/0.jpg)](https://youtu.be/L8atFMG-Ka0)
 
