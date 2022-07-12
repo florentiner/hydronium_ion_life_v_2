@@ -16,7 +16,11 @@ I wrote an algorithm on C++ trying to optimize the running time of the program, 
 
 # Steps
 
-1. Use n2p2 to generate trajectory file. Use official n2p2 documentation (https://compphysvienna.github.io/n2p2/) or use already generated files (https://drive.google.com/drive/folders/1171H9Y3JmubxmxBJFLCEM18LqhYzYVEE?usp=sharing).
+1. Use n2p2 to generate trajectory file. 
+
+Use official n2p2 documentation (https://compphysvienna.github.io/n2p2/) or use already generated files (https://drive.google.com/drive/folders/1171H9Y3JmubxmxBJFLCEM18LqhYzYVEE?usp=sharing).
+
+Files for n2p2 input are located in run_n2p2 folder
 
 If type of trajectory file will be ```.dmp``` just change it to ```.LAMMPSDUMP```
 
@@ -37,9 +41,17 @@ cmake .. && make
 ./hydro_ion_life_v_2 -t=max <path to trajectory file/trajectory file> # run on all threds
 ```
 
-# Visualistation of modeling
+4. Visualize trajectory
+
+To visualize trajectory use ```visualization_model_of_water_dynamic.ipynb``` in visualization_of_water_modeling folder
+
+Example Visualistation of modeling:
 
 [![Visualistation of modeling](https://img.youtube.com/vi/L8atFMG-Ka0/0.jpg)](https://youtu.be/L8atFMG-Ka0)
+
+5. Make statistics.
+
+To make statistics use ```Hist.ipynb``` in make_statistic folder
 
 # Links:
 
