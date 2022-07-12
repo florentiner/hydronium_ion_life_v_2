@@ -18,7 +18,7 @@ I wrote an algorithm on C++ trying to optimize the running time of the program, 
 
 1. Use n2p2 to generate trajectory file. 
 
-Use official n2p2 documentation (https://compphysvienna.github.io/n2p2/) or use already generated files (https://drive.google.com/drive/folders/1171H9Y3JmubxmxBJFLCEM18LqhYzYVEE?usp=sharing).
+Use official n2p2 documentation (https://compphysvienna.github.io/n2p2/) or use already generated files trajectory file (https://drive.google.com/drive/folders/1171H9Y3JmubxmxBJFLCEM18LqhYzYVEE?usp=sharing).
 
 Files for n2p2 input are located in run_n2p2 folder
 
@@ -45,6 +45,8 @@ Programe will generate:
 
 * ```res_life.txt``` file with information of hydronium lifetime.
 * ```vis_mod.txt``` file with information to visualize model of trajectory.
+
+Or use already generated files (https://drive.google.com/drive/folders/1ZTA9SaqLIs6yKc80o01Hip82wujmmnGN?usp=sharing)
 
 4. Visualize trajectory
 
