@@ -41,6 +41,11 @@ cmake .. && make
 ./hydro_ion_life_v_2 -t=max <path to trajectory file/trajectory file> # run on all threds
 ```
 
+Programe will generate:
+
+* ```res_life.txt``` file with information of hydronium lifetime.
+* ```vis_mod.txt``` file with information to visualize model of trajectory.
+
 4. Visualize trajectory
 
 To visualize trajectory use ```visualization_model_of_water_dynamic.ipynb``` in visualization_of_water_modeling folder
