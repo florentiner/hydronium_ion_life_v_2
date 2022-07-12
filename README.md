@@ -38,7 +38,7 @@ cmake .. && make
 ```
 ./hydro_ion_life_v_2 <path to trajectory file/trajectory file> # run on 1 thred
 ./hydro_ion_life_v_2 -t=40 <path to trajectory file/trajectory file> # run on 40 threds
-./hydro_ion_life_v_2 -t=max <path to trajectory file/trajectory file> # run on all threds
+./hydro_ion_life_v_2 -t=all <path to trajectory file/trajectory file> # run on all threds
 ```
 
 Programe will generate:
