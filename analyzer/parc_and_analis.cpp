@@ -150,7 +150,7 @@ instruction add_instruction_to_vector(O_atom O, int frame_time, int jump_index) 
 }
 
 //main function that calculate vector of hydronium lifetime
-int hydro_life(std::string file, bool is_gz, std::string path_to_save = "."){
+int hydro_life(std::string file, bool is_gz, std::string path_to_save){
     std::vector<int> life_ar; // vector with life time of hydronium
     std::vector<instruction> arr_instruction_to_atom_visual; // vector of instruction with content
     float water_length = 0.9584; // distance between H(hydrogen) and O(oxygen) in water molecule
