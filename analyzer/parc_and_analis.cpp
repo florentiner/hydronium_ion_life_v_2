@@ -69,10 +69,10 @@ void glosar(int num, int order, std::vector<int>& input_vect){
 }
 
 //make file with data in input vector
-void write_to_file_res(std::vector<int> life_ar, std::string file_name_of_analyzing){
+void write_to_file_res(std::vector<int> life_ar, std::string file_name_of_analyzing, std::string path_to_save){
     std::string res_str;
     std::ofstream res_file;
-    std::string file_name_write = "res_life.txt";
+    std::string file_name_write = std::string path_to_save + "res_life.txt";
     res_file.open (file_name_write);
     for(int el:life_ar){
         res_str += std::to_string(el) + ", ";
@@ -125,10 +125,10 @@ struct instruction {
 };
 
 // make file which will be used to visualize H(hydrogen) moving
-void write_to_file_vis(std::vector<instruction> instruction, std::string file_name_of_analyzing){
+void write_to_file_vis(std::vector<instruction> instruction, std::string file_name_of_analyzing, std::string path_to_save){
     std::string res_str;
     std::ofstream res_file;
-    std::string file_name_write = "vis_mod.txt";
+    std::string file_name_write = path_to_save + "vis_mod.txt";
     res_file.open (file_name_write);
     int i = 0;
     for(struct instruction el: instruction){
@@ -150,7 +150,7 @@ instruction add_instruction_to_vector(O_atom O, int frame_time, int jump_index) 
 }
 
 //main function that calculate vector of hydronium lifetime
-int hydro_life(std::string file, bool is_gz){
+int hydro_life(std::string file, bool is_gz, std::string path_to_save = "."){
     std::vector<int> life_ar; // vector with life time of hydronium
     std::vector<instruction> arr_instruction_to_atom_visual; // vector of instruction with content
     float water_length = 0.9584; // distance between H(hydrogen) and O(oxygen) in water molecule
@@ -320,8 +320,8 @@ int hydro_life(std::string file, bool is_gz){
     }
 
     is_gz ? (void)gzclose(infile) : newfile.close(); //close the file object.
-    write_to_file_res(life_ar, file);
-    write_to_file_vis(arr_instruction_to_atom_visual, file);
+    write_to_file_res(life_ar, file, path_to_save);
+    write_to_file_vis(arr_instruction_to_atom_visual, file, path_to_save);
     h_arr.clear();
     o_arr.clear();
     return 0;
