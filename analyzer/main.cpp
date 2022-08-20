@@ -25,7 +25,7 @@ int main(int argc, char *argv[]) {
             return -1;
         }
 
-        std::string path_of_resaults = "."
+        std::string path_of_resaults = ".";
         std::size_t num_threads = 1;
         for (int i = 0; i < argc; i++){
             //Set number of threads (default 1)
