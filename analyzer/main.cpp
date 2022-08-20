@@ -25,7 +25,7 @@ int main(int argc, char *argv[]) {
             return -1;
         }
 
-        std::string path_of_resaults = argv[argc-1]
+        std::string path_of_resaults = "."
         std::size_t num_threads = 1;
         for (int i = 0; i < argc; i++){
             //Set number of threads (default 1)
@@ -40,7 +40,7 @@ int main(int argc, char *argv[]) {
             }
         }
         omp_set_num_threads(num_threads);
-        return hydro_life(path_of_resaults, is_gz);
+        return hydro_life(argv[argc-1], is_gz, path_of_resaults);
     }
     else{
         std::cout << "Pleas enter input file (text format or .gz. Text format is about 3x faster then .gz)" << std::endl;
