@@ -80,7 +80,7 @@ Alternatively use ```docker```:
 docker run --rm -v <path/to/trajectory/file>:/app/data hydrogen_life_calculator data/<trajectory_file_name>
 ```
 
- * With ```quay.io ``` image:
+ * With ```quay.io``` image:
 
 ```
 docker run --rm -v <path/to/trajectory/file>:/app/data quay.io/florentiner/hydrogen_life_calculator data/<trajectory_file_name>
