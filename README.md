@@ -33,12 +33,57 @@ mkdir build && cd build
 cmake .. && make
 ```
 
+Alternatively build ```docker``` image locally:
+
+Make ```Dockerfile```:
+
+```
+cat << EOF > Dockerfile  
+# syntax=docker/dockerfile:1
+FROM alpine:3.15
+WORKDIR /app
+RUN apk add git build-base zlib-dev cmake && \
+    git clone http://github.com/florentiner/hydronium_ion_life_v_2.git && \
+    cd hydronium_ion_life_v_2/analyzer && \
+    mkdir build && cd build && \
+    cmake .. && make
+
+FROM alpine:3.15
+WORKDIR /app 
+RUN apk add build-base zlib-dev --no-cache bash && \
+    mkdir data
+COPY --from=0 /app/hydronium_ion_life_v_2/analyzer/build ./
+ENTRYPOINT ["./hydro_ion_life_v_2", "-v=/app/data/"]
+```
+
+Build image:
+
+```
+docker build -t hydrogen_life_calculator .
+```
+
+
 3. Run programe with trajectory.
 
 ```
-./hydro_ion_life_v_2 <path to trajectory file/trajectory file> # run on 1 thred
-./hydro_ion_life_v_2 -t=40 <path to trajectory file/trajectory file> # run on 40 threds
-./hydro_ion_life_v_2 -t=all <path to trajectory file/trajectory file> # run on all threds
+./hydro_ion_life_v_2 <path/to/trajectory/file/trajectory_file_name> # run on 1 thred
+./hydro_ion_life_v_2 -t=40 <path/to/trajectory/file/trajectory_file_name> # run on 40 threds
+./hydro_ion_life_v_2 -t=all <path/to/trajectory/file/trajectory_file_name> # run on all threds
+./hydro_ion_life_v_2 -v=<path/to/directory/with/results> <path/to/trajectory/file/trajectory_file_name> # specify directory where results will be saved
+```
+
+Alternatively use ```docker```:
+
+ * Localy:
+
+```
+docker run --rm -v <path/to/trajectory/file>:/app/data hydrogen_life_calculator data/<trajectory_file_name>
+```
+
+ * With ```quay.io ``` image:
+
+```
+docker run --rm -v <path/to/trajectory/file>:/app/data quay.io/florentiner/hydrogen_life_calculator data/<trajectory_file_name>
 ```
 
 Programe will generate:
