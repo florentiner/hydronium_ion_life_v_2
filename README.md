@@ -53,7 +53,8 @@ WORKDIR /app
 RUN apk add build-base zlib-dev --no-cache bash && \
     mkdir data
 COPY --from=0 /app/hydronium_ion_life_v_2/analyzer/build ./
-ENTRYPOINT ["./hydro_ion_life_v_2", "-v=/app/data/"]
+ENTRYPOINT ["./hydro_ion_life_v_2", "-v=/app/data/", "-t=all"]
+EOF
 ```
 
 Build image:
@@ -77,8 +78,10 @@ Alternatively use ```docker```:
  * Localy:
 
 ```
-docker run --rm -v <path/to/trajectory/file>:/app/data hydrogen_life_calculator data/<trajectory_file_name>
+docker run --rm -v <path/to/trajectory/file>:/app/data hydrogen_life_calculator data/<trajectory_file_name> # run on all CPUs resources*
+docker run --rm -v <path/to/trajectory/file>:/app/data --cpus="0.5" hydrogen_life_calculator data/<trajectory_file_name> # limit CPUs resources
 ```
+*notice what ```docker``` operate CPUs resources, not threads. For example 0.5 CPUs resources on CPU with 2 cores and 4 threads same as 1 thread.
 
  * With ```quay.io``` image:
 
