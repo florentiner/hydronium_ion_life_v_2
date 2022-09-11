@@ -4,7 +4,7 @@
 
 # Project Description:
 
-This is a training project that I did with my groupmate Nikolai Sukhanov as an examination project for the course of chemoinformatics.
+This is a training project that I (Danil Ezhov) did with my groupmate Nikolai Sukhanov as an examination project for the course of chemoinformatics.
 
 Goal of this project was to find the average lifetime of hydronium in silico experiments and compare it with the value of a real experiment. 
 
@@ -113,4 +113,8 @@ To make statistics use ```Hist.ipynb``` in make_statistic folder
 
 <h4> More information about project and it results can be found in the Google presentation: https://docs.google.com/presentation/d/1cojQTGG-8JYVHib04xLLoeiYF0HFTsvFRbRrmog8Xjg/edit?usp=sharing </h4>
 
+<h4> Text for presentation: https://docs.google.com/document/d/15O3OGPX84zqZUGAQ4JAzSDecWgfmfsFjwp-7InwxR2Q/edit?usp=sharing </h4>
+
 <h4> Link to older version of project: https://github.com/florentiner/hydronium_ion_life </h4>
+
+<h4> My contacts: email: danil.ejow98@gmail.com telegram: @decoratoren </h4>
