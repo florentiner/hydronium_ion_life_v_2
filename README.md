@@ -81,7 +81,7 @@ Alternatively use ```docker```:
 docker run --rm -v <path/to/trajectory/file>:/app/data hydrogen_life_calculator data/<trajectory_file_name> # run on all CPUs resources*
 docker run --rm -v <path/to/trajectory/file>:/app/data --cpus="0.5" hydrogen_life_calculator data/<trajectory_file_name> # limit CPUs resources to half of core
 ```
-*notice what ```docker``` operate CPUs resources, not threads. For example 0.5 CPUs resources on CPU with 2 cores and 4 threads same as 1 thread.
+*notice that ```docker``` operate CPUs resources, not threads. For example 0.5 CPUs resources on CPU with 2 cores and 4 threads same as 1 thread.
 
  * With ```quay.io``` image:
 
