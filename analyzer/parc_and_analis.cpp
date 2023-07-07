@@ -177,8 +177,8 @@ int hydro_life(std::string file, bool is_gz, std::string path_to_save, int recro
     bool first_frame = true; // indicator is the frame first
     bool start_frame_coord = false; // indicator is the frame first
     bool is_O_of_jump_H_change = false; //indicator that coordinates are being read
-    typedef std::vector< std::tuple<int, O_atom*> > tuple_arr;
-    tuple_arr recrosing_arr; // vector format: (time_after_O_change, pointer_to_previous_O)
+    typedef std::vector< std::tuple<int, O_atom*, int> > tuple_arr;
+    tuple_arr recrosing_arr; // vector format: (time_after_O_change, pointer_to_previous_O, life_time)
 
     //open file and check if file has opened. If type of file .gz then one algorithm else another.
     if (is_gz) {
@@ -293,9 +293,9 @@ int hydro_life(std::string file, bool is_gz, std::string path_to_save, int recro
                             glossary_O_of_jump_H[index_to_change] = -1;
                             glosar(O->get_name(), change_index, glossary_O_of_jump_H);
                             O_of_jump_H[change_index] = O;
-                            recrosing_arr.push_back(std::tuple<int, O_atom*>(0, prev));
+                            recrosing_arr.push_back(std::tuple<int, O_atom*, int>(0, prev, life_time));
 //                            life_ar.push_back(life_time);
-//                            life_time = 0;
+                            life_time = 0;
                             is_O_of_jump_H_change = true;
                             instruction show_instruction = add_instruction_to_vector(O, frame_time, change_index);
                             arr_instruction_to_atom_visual.push_back(show_instruction);
@@ -314,10 +314,13 @@ int hydro_life(std::string file, bool is_gz, std::string path_to_save, int recro
                 }
                 if (std::get<0>(recrosing_arr[0]) >= recrossing_time){
                     if (std::get<1>(recrosing_arr[0])->get_H_count() != 3){
-                        life_ar.push_back(life_time - recrossing_time);
-                        life_time = 0;
+                        life_ar.push_back(std::get<2>(recrosing_arr[0]));
+                        recrosing_arr.erase(recrosing_arr.begin());
                     }
-                    recrosing_arr.erase(recrosing_arr.begin());
+                    else{
+                        life_time = std::get<2>(recrosing_arr[0]) + recrossing_time;
+                        recrosing_arr.clear();
+                    }
                 }
 
             }
