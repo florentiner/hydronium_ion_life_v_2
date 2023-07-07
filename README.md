@@ -71,6 +71,7 @@ docker build -t hydrogen_life_calculator .
 ./hydro_ion_life_v_2 -t=40 <path/to/trajectory/file/trajectory_file_name> # run on 40 threds
 ./hydro_ion_life_v_2 -t=all <path/to/trajectory/file/trajectory_file_name> # run on all threds
 ./hydro_ion_life_v_2 -v=<path/to/directory/with/results> <path/to/trajectory/file/trajectory_file_name> # specify directory where results will be saved
+./hydro_ion_life_v_2 -n=50 <path/to/trajectory/file/trajectory_file_name> # add recrossing time
 ```
 
 Alternatively use ```docker```:
@@ -79,7 +80,8 @@ Alternatively use ```docker```:
 
 ```
 docker run --rm -v <path/to/trajectory/file>:/app/data hydrogen_life_calculator data/<trajectory_file_name> # run on all CPUs resources*
-docker run --rm -v <path/to/trajectory/file>:/app/data --cpus="0.5" hydrogen_life_calculator data/<trajectory_file_name> # limit CPUs resources to half of core
+docker run --rm -v <path/to/trajectory/file>:/app/data --cpus="0.5" hydrogen_life_calculator data/<trajectory_file_name> # limit CPUs resources to half of corea
+docker run --rm -v <path/to/trajectory/file>:/app/data hydrogen_life_calculator -n=50 data/<trajectory_file_name> # add recrossing time
 ```
 *notice that ```docker``` operate CPUs resources, not threads. For example 0.5 CPUs resources on CPU with 2 cores and 4 threads same as 1 thread.
 
@@ -88,6 +90,7 @@ docker run --rm -v <path/to/trajectory/file>:/app/data --cpus="0.5" hydrogen_lif
 ```
 docker run --rm -v <path/to/trajectory/file>:/app/data quay.io/florentiner/hydrogen_life_calculator data/<trajectory_file_name>
 docker run --rm -v <path/to/trajectory/file>:/app/data --cpus="0.5" quay.io/florentiner/hydrogen_life_calculator data/<trajectory_file_name> # limit CPUs resources to half of core
+docker run --rm -v <path/to/trajectory/file>:/app/data quay.io/florentiner/hydrogen_life_calculator -n=50 data/<trajectory_file_name> # add recrossing time
 ```
 
 Programe will generate:
