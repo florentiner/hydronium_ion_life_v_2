@@ -36,7 +36,10 @@ int main(int argc, char *argv[]) {
             }
             //Set directory where will be results
             if (std::string(argv[i]).find("-v") != std::string::npos){
-               path_of_resaults = std::string(argv[i]).substr(3 , std::string(argv[i]).size());
+                path_of_resaults = std::string(argv[i]).substr(3 , std::string(argv[i]).size());
+            }
+            else {
+                path_of_resaults = "./";
             }
         }
         omp_set_num_threads(num_threads);

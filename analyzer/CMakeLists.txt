@@ -2,10 +2,10 @@ cmake_minimum_required(VERSION 3.21.1)
 project(hydro_ion_life_v_2)
 
 if(APPLE)
-set(CMAKE_C_COMPILER "/usr/local/Cellar/llvm/13.0.1_1/bin/clang")
-set(CMAKE_CXX_COMPILER "/usr/local/Cellar/llvm/13.0.1_1/bin/clang++")
-set(OPENMP_LIBRARIES "/usr/local/Cellar/llvm/13.0.1_1/lib")
-set(OPENMP_INCLUDES "/usr/local/Cellar/llvm/13.0.1_1/include")
+set(CMAKE_C_COMPILER "/usr/local/Cellar/llvm/16.0.6/bin/clang")
+set(CMAKE_CXX_COMPILER "/usr/local/Cellar/llvm/16.0.6/bin/clang++")
+set(OPENMP_LIBRARIES "/usr/local/Cellar/llvm/16.0.6/lib")
+set(OPENMP_INCLUDES "/usr/local/Cellar/llvm/16.0.6/include")
 
 OPTION (USE_OpenMP "Use OpenMP to enamble <omp.h>" ON)
 
