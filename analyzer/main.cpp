@@ -25,8 +25,9 @@ int main(int argc, char *argv[]) {
             return -1;
         }
 
-        std::string path_of_resaults = ".";
+        std::string path_of_resaults = "./";
         std::size_t num_threads = 1;
+        int recrossing_time = 0;
         for (int i = 0; i < argc; i++){
             //Set number of threads (default 1)
             if (std::string(argv[i]).find("-t") != std::string::npos){
@@ -38,12 +39,13 @@ int main(int argc, char *argv[]) {
             if (std::string(argv[i]).find("-v") != std::string::npos){
                 path_of_resaults = std::string(argv[i]).substr(3 , std::string(argv[i]).size());
             }
-            else {
-                path_of_resaults = "./";
+            //Set time for recrossing
+            if (std::string(argv[i]).find("-n") != std::string::npos){
+                recrossing_time = stoi (std::string(argv[i]).substr(3 , std::string(argv[i]).size()));
             }
         }
         omp_set_num_threads(num_threads);
-        return hydro_life(argv[argc-1], is_gz, path_of_resaults);
+        return hydro_life(argv[argc-1], is_gz, path_of_resaults, recrossing_time);
     }
     else{
         std::cout << "Pleas enter input file (text format or .gz. Text format is about 3x faster then .gz)" << std::endl;

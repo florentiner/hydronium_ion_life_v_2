@@ -150,7 +150,7 @@ instruction add_instruction_to_vector(O_atom O, int frame_time, int jump_index) 
 }
 
 //main function that calculate vector of hydronium lifetime
-int hydro_life(std::string file, bool is_gz, std::string path_to_save){
+int hydro_life(std::string file, bool is_gz, std::string path_to_save, int recrossing_time){
     std::vector<int> life_ar; // vector with life time of hydronium
     std::vector<instruction> arr_instruction_to_atom_visual; // vector of instruction with content
     float water_length = 0.9584; // distance between H(hydrogen) and O(oxygen) in water molecule
@@ -177,6 +177,8 @@ int hydro_life(std::string file, bool is_gz, std::string path_to_save){
     bool first_frame = true; // indicator is the frame first
     bool start_frame_coord = false; // indicator is the frame first
     bool is_O_of_jump_H_change = false; //indicator that coordinates are being read
+    typedef std::vector< std::tuple<int, O_atom*> > tuple_arr;
+    tuple_arr recrosing_arr; // vector format: (time_after_O_change, pointer_to_previous_O)
 
     //open file and check if file has opened. If type of file .gz then one algorithm else another.
     if (is_gz) {
@@ -291,8 +293,9 @@ int hydro_life(std::string file, bool is_gz, std::string path_to_save){
                             glossary_O_of_jump_H[index_to_change] = -1;
                             glosar(O->get_name(), change_index, glossary_O_of_jump_H);
                             O_of_jump_H[change_index] = O;
-                            life_ar.push_back(life_time);
-                            life_time = 0;
+                            recrosing_arr.push_back(std::tuple<int, O_atom*>(0, prev));
+//                            life_ar.push_back(life_time);
+//                            life_time = 0;
                             is_O_of_jump_H_change = true;
                             instruction show_instruction = add_instruction_to_vector(O, frame_time, change_index);
                             arr_instruction_to_atom_visual.push_back(show_instruction);
@@ -305,6 +308,19 @@ int hydro_life(std::string file, bool is_gz, std::string path_to_save){
             std::fill( std::begin( frame_lin ), std::end( frame_lin ), 0 );
             open_frame_count = 0;
             lines.clear();
+            if (recrosing_arr.size() > 0) {
+                for (int i = 0; i < recrosing_arr.size(); i++){
+                    std::get<0>(recrosing_arr[i]) += 1;
+                }
+                if (std::get<0>(recrosing_arr[0]) >= recrossing_time){
+                    if (std::get<1>(recrosing_arr[0])->get_H_count() != 3){
+                        life_ar.push_back(life_time - recrossing_time);
+                        life_time = 0;
+                    }
+                    recrosing_arr.erase(recrosing_arr.begin());
+                }
+
+            }
             // If H(hydrogen) change orbital, then change O(oxygen) and H, which need to be controlled.
             if ((is_O_of_jump_H_change) or (first_frame)) {
                 jump_H.clear();
