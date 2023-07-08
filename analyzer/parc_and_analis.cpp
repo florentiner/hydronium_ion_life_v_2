@@ -311,18 +311,17 @@ int hydro_life(std::string file, bool is_gz, std::string path_to_save, int recro
             if (recrosing_arr.size() > 0) {
                 for (int i = 0; i < recrosing_arr.size(); i++){
                     std::get<0>(recrosing_arr[i]) += 1;
+                    if (std::get<1>(recrosing_arr[i])->get_H_count() == 3){ // recrossing condition
+                        life_time = std::get<2>(recrosing_arr[i]) + std::get<0>(recrosing_arr[i]);
+                        recrosing_arr.erase(std::next(recrosing_arr.begin(), i), recrosing_arr.end());
+                        break;
+                    }
                 }
-                if (std::get<0>(recrosing_arr[0]) >= recrossing_time){
-                    if (std::get<1>(recrosing_arr[0])->get_H_count() != 3){
+                if ((recrosing_arr.size() > 0) &&  // not empty
+                   (std::get<0>(recrosing_arr[0]) >= recrossing_time)) {// out of recrossing time
                         life_ar.push_back(std::get<2>(recrosing_arr[0]));
                         recrosing_arr.erase(recrosing_arr.begin());
                     }
-                    else{
-                        life_time = std::get<2>(recrosing_arr[0]) + recrossing_time;
-                        recrosing_arr.clear();
-                    }
-                }
-
             }
             // If H(hydrogen) change orbital, then change O(oxygen) and H, which need to be controlled.
             if ((is_O_of_jump_H_change) or (first_frame)) {
