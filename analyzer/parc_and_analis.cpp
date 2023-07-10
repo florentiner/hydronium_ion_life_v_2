@@ -84,6 +84,23 @@ void write_to_file_res(std::vector<int> life_ar, std::string file_name_of_analyz
     res_file.close();
 }
 
+void write_to_type_O_file(std::vector<std::vector<int>> life_ar, std::string path_to_save){
+    std::string res_str;
+    std::ofstream res_file;
+    std::string file_name_write = path_to_save + "type_O_stat.txt";
+    res_file.open (file_name_write);
+    for(std::vector<int> el_arr:life_ar){
+        for (int el:el_arr) {
+            res_str += std::to_string(el) + ", ";
+        }
+        res_str += "\n";
+    }
+    res_str.pop_back();
+    res_str.pop_back();
+    res_file << res_str;
+    res_file.close();
+}
+
 //return next line of .gz file
 std::vector< char > readline( gzFile f ) {
     std::vector< char > v( 256 );
@@ -197,7 +214,9 @@ int hydro_life(std::string file, bool is_gz, std::string path_to_save, int recro
     bool is_O_of_jump_H_change = false; //indicator that coordinates are being read
     typedef std::vector< std::tuple<int, O_atom*, int, int, O_atom *, int> > recrosing_tuple_arr;
     recrosing_tuple_arr recrosing_arr; // vector format: (time_after_O_change, pointer_to_previous_O, life_time)
-
+    bool under_c = false;
+    int under_c_O;
+    int inder_c_count = 0;
 
     //open file and check if file has opened. If type of file .gz then one algorithm else another.
     if (is_gz) {
@@ -298,30 +317,23 @@ int hydro_life(std::string file, bool is_gz, std::string path_to_save, int recro
                     O_atom* belong_O = (*H).get_O_conected();
                     O_atom* nearest_O = o_arr[find_nearest_O(H, o_arr, frame_lin)];
                     if ((*nearest_O).get_name() != (*belong_O).get_name()){
-                        change_O_arr.push_back(std::tuple<O_atom *, O_atom *, H_atom *, float, float>
-                                                       (belong_O, nearest_O, H,
-                                                        (*H).dist_bt_atoms(*belong_O, frame_lin),
-                                                        (*H).dist_bt_atoms(*nearest_O, frame_lin)));
+                        float dist_to_nearest_O = (*H).dist_bt_atoms(*nearest_O, frame_lin);
+                        if (dist_to_nearest_O <= water_length){
+                            (*belong_O).del_atom((*H).get_name());
+                            (*H).set_O_conect(nearest_O);
+                            (*nearest_O).up_H_count(H);
+                            int index_to_change = (*belong_O).get_name();
+                            int change_index = glossary_O_of_jump_H[index_to_change];
+                            glossary_O_of_jump_H[index_to_change] = -1;
+                            glosar(nearest_O->get_name(), change_index, glossary_O_of_jump_H);
+                            O_of_jump_H[change_index] = nearest_O;
+                            recrosing_arr.push_back(std::tuple<int, O_atom *, int, int, O_atom *, int >(0, belong_O, life_time, frame_time, nearest_O, change_index));
+                            life_time = 0;
+                            is_O_of_jump_H_change = true;
+                        }
+
                     }
                 }
-                if (change_O_arr.size() > 0){
-                    std::tuple<O_atom*, O_atom*, H_atom*, float, float> parts_of_change = change_O_arr[index_to_change(change_O_arr)]; // make change
-                    O_atom* belong_O = std::get<0>(parts_of_change);
-                    O_atom* nearest_O = std::get<1>(parts_of_change);
-                    H_atom* H = std::get<2>(parts_of_change);
-                    (*belong_O).del_atom((*H).get_name());
-                    (*H).set_O_conect(nearest_O);
-                    (*nearest_O).up_H_count(H);
-                    int index_to_change = (*belong_O).get_name();
-                    int change_index = glossary_O_of_jump_H[index_to_change];
-                    glossary_O_of_jump_H[index_to_change] = -1;
-                    glosar(nearest_O->get_name(), change_index, glossary_O_of_jump_H);
-                    O_of_jump_H[change_index] = nearest_O;
-                    recrosing_arr.push_back(std::tuple<int, O_atom *, int, int, O_atom *, int >(0, belong_O, life_time, frame_time, nearest_O, change_index));
-                    life_time = 0;
-                    is_O_of_jump_H_change = true;
-                }
-                change_O_arr.clear();
             }
             frame_time++;
             life_time++;
@@ -334,7 +346,6 @@ int hydro_life(std::string file, bool is_gz, std::string path_to_save, int recro
                     if (std::get<1>(recrosing_arr[i])->get_H_count() == 3){ // recrossing condition
                         life_time = std::get<2>(recrosing_arr[i]) + std::get<0>(recrosing_arr[i]);
                         recrosing_arr.erase(std::next(recrosing_arr.begin(), i), recrosing_arr.end());
-
                         break;
                     }
                 }
@@ -362,7 +373,6 @@ int hydro_life(std::string file, bool is_gz, std::string path_to_save, int recro
             first_frame = false;
         }
     }
-
     is_gz ? (void)gzclose(infile) : newfile.close(); //close the file object.
     write_to_file_res(life_ar, file, path_to_save);
     write_to_file_vis(arr_instruction_to_atom_visual, file, path_to_save);

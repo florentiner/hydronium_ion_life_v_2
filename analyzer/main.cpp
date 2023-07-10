@@ -46,7 +46,7 @@ int main(int argc, char *argv[]) {
         }
         omp_set_num_threads(num_threads);
         return hydro_life(argv[argc-1], is_gz, path_of_resaults, recrossing_time);
-    }
+}
     else{
         std::cout << "Pleas enter input file (text format or .gz. Text format is about 3x faster then .gz)" << std::endl;
         return -1;
