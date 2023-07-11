@@ -47,9 +47,14 @@ int find_nearest_O(H_atom* H, std::vector<O_atom*> o_arr, float* frame_lin){
     for (int j = 0; j < o_arr.size(); ++j) {
         O_atom* O = o_arr[j];
         float dist = (*H).dist_bt_atoms(*O, frame_lin);
-        if (dist < min_dist){
-            min_dist = dist;
-            max_i = j;
+        if (dist < min_dist) {
+            #pragma omp critical
+            {
+                if (dist < min_dist) {
+                    min_dist = dist;
+                    max_i = j;
+                }
+            }
         }
     }
     return max_i;
@@ -84,13 +89,13 @@ void write_to_file_res(std::vector<int> life_ar, std::string file_name_of_analyz
     res_file.close();
 }
 
-void write_to_type_O_file(std::vector<std::vector<int>> life_ar, std::string path_to_save){
+void write_to_file_type_O(std::vector<std::vector<int>> arr_type_O, std::string path_to_save){
     std::string res_str;
     std::ofstream res_file;
-    std::string file_name_write = path_to_save + "type_O_stat.txt";
+    std::string file_name_write = path_to_save + "type_O.txt";
     res_file.open (file_name_write);
-    for(std::vector<int> el_arr:life_ar){
-        for (int el:el_arr) {
+    for(std::vector<int> el_ar: arr_type_O){
+        for (int el: el_ar) {
             res_str += std::to_string(el) + ", ";
         }
         res_str += "\n";
@@ -100,6 +105,7 @@ void write_to_type_O_file(std::vector<std::vector<int>> life_ar, std::string pat
     res_file << res_str;
     res_file.close();
 }
+
 
 //return next line of .gz file
 std::vector< char > readline( gzFile f ) {
@@ -217,6 +223,7 @@ int hydro_life(std::string file, bool is_gz, std::string path_to_save, int recro
     bool under_c = false;
     int under_c_O;
     int inder_c_count = 0;
+    std::vector<std::vector<int>> arr_type_O;
 
     //open file and check if file has opened. If type of file .gz then one algorithm else another.
     if (is_gz) {
@@ -243,7 +250,6 @@ int hydro_life(std::string file, bool is_gz, std::string path_to_save, int recro
 
     // cycle to read, parse and calculate needing data
     while(!tp.empty()){
-
         //reading for different type of file
         if(is_gz){
             char_line = readline(infile);
@@ -297,8 +303,7 @@ int hydro_life(std::string file, bool is_gz, std::string path_to_save, int recro
                 }
             }
             else{
-                // parse data from lines in parrarel mode
-                #pragma omp parallel for
+                // parse data from lines
                 for (int l_i = 0; l_i < lines.size(); ++l_i) {
                     std::string line = lines[l_i];
                     std::vector<std::string> re = split(line, ' ');
@@ -317,21 +322,17 @@ int hydro_life(std::string file, bool is_gz, std::string path_to_save, int recro
                     O_atom* belong_O = (*H).get_O_conected();
                     O_atom* nearest_O = o_arr[find_nearest_O(H, o_arr, frame_lin)];
                     if ((*nearest_O).get_name() != (*belong_O).get_name()){
-                        float dist_to_nearest_O = (*H).dist_bt_atoms(*nearest_O, frame_lin);
-                        if (dist_to_nearest_O <= water_length){
-                            (*belong_O).del_atom((*H).get_name());
-                            (*H).set_O_conect(nearest_O);
-                            (*nearest_O).up_H_count(H);
-                            int index_to_change = (*belong_O).get_name();
-                            int change_index = glossary_O_of_jump_H[index_to_change];
-                            glossary_O_of_jump_H[index_to_change] = -1;
-                            glosar(nearest_O->get_name(), change_index, glossary_O_of_jump_H);
-                            O_of_jump_H[change_index] = nearest_O;
-                            recrosing_arr.push_back(std::tuple<int, O_atom *, int, int, O_atom *, int >(0, belong_O, life_time, frame_time, nearest_O, change_index));
-                            life_time = 0;
-                            is_O_of_jump_H_change = true;
-                        }
-
+                        (*belong_O).del_atom((*H).get_name());
+                        (*H).set_O_conect(nearest_O);
+                        (*nearest_O).up_H_count(H);
+                        int index_to_change = (*belong_O).get_name();
+                        int change_index = glossary_O_of_jump_H[index_to_change];
+                        glossary_O_of_jump_H[index_to_change] = -1;
+                        glosar(nearest_O->get_name(), change_index, glossary_O_of_jump_H);
+                        O_of_jump_H[change_index] = nearest_O;
+                        recrosing_arr.push_back(std::tuple<int, O_atom *, int, int, O_atom *, int >(0, belong_O, life_time, frame_time, nearest_O, change_index));
+                        life_time = 0;
+                        is_O_of_jump_H_change = true;
                     }
                 }
             }
