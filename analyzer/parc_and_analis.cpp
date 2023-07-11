@@ -173,22 +173,6 @@ instruction add_instruction_to_vector(O_atom O, int frame_time, int jump_index) 
     return inst;
 }
 
-typedef std::vector< std::tuple<O_atom*, O_atom*, H_atom*, float, float>> inf_change_O_arr;
-inf_change_O_arr change_O_arr;
-
-int index_to_change(inf_change_O_arr change_O_arr){
-    int i = 0;
-    int ret_indx = 0;
-    float min_dist = std::get<4>(change_O_arr[0]);
-    for (std::tuple<O_atom*, O_atom*, H_atom*, float, float> el: change_O_arr){
-        if (min_dist >= std::get<4>(el)){
-            min_dist = std::get<4>(el);
-            ret_indx = i;
-        }
-        i++;
-    }
-    return ret_indx;
-}
 
 //main function that calculate vector of hydronium lifetime
 int hydro_life(std::string file, bool is_gz, std::string path_to_save, int recrossing_time){
@@ -218,7 +202,15 @@ int hydro_life(std::string file, bool is_gz, std::string path_to_save, int recro
     bool first_frame = true; // indicator is the frame first
     bool start_frame_coord = false; // indicator is the frame first
     bool is_O_of_jump_H_change = false; //indicator that coordinates are being read
-    typedef std::vector< std::tuple<int, O_atom*, int, int, O_atom *, int> > recrosing_tuple_arr;
+    struct recrosing_tuple {
+        int time;
+        O_atom * belong_O;
+        int life_time;
+        int frame_time;
+        O_atom * nearest_O;
+        int change_index;
+    };
+    typedef std::vector<recrosing_tuple> recrosing_tuple_arr;
     recrosing_tuple_arr recrosing_arr; // vector format: (time_after_O_change, pointer_to_previous_O, life_time)
     bool under_c = false;
     int under_c_O;
@@ -330,7 +322,14 @@ int hydro_life(std::string file, bool is_gz, std::string path_to_save, int recro
                         glossary_O_of_jump_H[index_to_change] = -1;
                         glosar(nearest_O->get_name(), change_index, glossary_O_of_jump_H);
                         O_of_jump_H[change_index] = nearest_O;
-                        recrosing_arr.push_back(std::tuple<int, O_atom *, int, int, O_atom *, int >(0, belong_O, life_time, frame_time, nearest_O, change_index));
+                        recrosing_tuple el;
+                        el.time = 0;
+                        el.belong_O = belong_O;
+                        el.life_time = life_time;
+                        el.frame_time = frame_time;
+                        el.nearest_O = nearest_O;
+                        el.change_index = change_index;
+                        recrosing_arr.push_back(el);
                         life_time = 0;
                         is_O_of_jump_H_change = true;
                     }
@@ -343,20 +342,20 @@ int hydro_life(std::string file, bool is_gz, std::string path_to_save, int recro
             lines.clear();
             if (recrosing_arr.size() > 0) {
                 for (int i = 0; i < recrosing_arr.size(); i++){
-                    std::get<0>(recrosing_arr[i]) += 1;
-                    if (std::get<1>(recrosing_arr[i])->get_H_count() == 3){ // recrossing condition
-                        life_time = std::get<2>(recrosing_arr[i]) + std::get<0>(recrosing_arr[i]);
+                    recrosing_arr[i].time += 1;
+                    if (recrosing_arr[i].belong_O->get_H_count() == 3){ // recrossing condition
+                        life_time = recrosing_arr[i].life_time + recrosing_arr[i].time;
                         recrosing_arr.erase(std::next(recrosing_arr.begin(), i), recrosing_arr.end());
                         break;
                     }
                 }
                 if ((recrosing_arr.size() > 0) &&  // not empty
-                   (std::get<0>(recrosing_arr[0]) >= recrossing_time)) {// out of recrossing time
-                    life_ar.push_back(std::get<2>(recrosing_arr[0]));
+                   (recrosing_arr[0].time >= recrossing_time)) {// out of recrossing time
+                    life_ar.push_back(recrosing_arr[0].life_time);
                     recrosing_arr.erase(recrosing_arr.begin());
-                    int frame_time_action =std::get<3>(recrosing_arr[0]);
-                    O_atom* nearest_O = std::get<4>(recrosing_arr[0]);
-                    int change_index = std::get<5>(recrosing_arr[0]);
+                    int frame_time_action = recrosing_arr[0].frame_time;
+                    O_atom* nearest_O = recrosing_arr[0].nearest_O;
+                    int change_index = recrosing_arr[0].change_index;
                     instruction show_instruction = add_instruction_to_vector(nearest_O, frame_time, change_index);
                     arr_instruction_to_atom_visual.push_back(show_instruction);
                     }
